@@ -5,13 +5,31 @@ import MapISS from "../components/MapISS";
 
 function Iss(props) {
   return (
-    <div id="issBackground">
-      <div
-        id="map"
-        style={{ opacity: props.displayGallery === true ? "0" : "1" }}
-      >
-        <MapISS />
-      </div>
+    <div id="ISS_container_for_transition">
+      {props.matches && (
+        <div
+          id="map"
+          style={
+            props.displayGallery || props.displayImgotd
+              ? { zIndex: "0", opacity: "0.5" }
+              : { zIndex: "1", transitionDelay: "1s", opacity: "1" }
+          }
+        >
+          <MapISS />
+        </div>
+      )}
+      {!props.matches && (
+        <div
+          id="map"
+          style={
+            props.displayGallery || props.displayImgotd
+              ? { zIndex: "0", opacity: "0.5" }
+              : { zIndex: "1", transitionDelay: "1s", opacity: "1" }
+          }
+        >
+          <MapISS />
+        </div>
+      )}
     </div>
   );
 }

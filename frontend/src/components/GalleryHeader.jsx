@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 
-import closeBttn from "../assets/close-button.png";
+import CloseButton from "./CloseButton";
+import FilterButton from "./FilterButton";
 
 function GalleryHeader({
   setGalleryVisible,
@@ -8,35 +9,35 @@ function GalleryHeader({
   setSearchQuery,
   setPageNum,
   setMyData,
+  setPopup,
+  matches,
 }) {
+  const filterArray = ["Sagittarius", "Earth", "Quiz", "Nebula"];
+
   function handleChange(e) {
     setSearchQuery(e.target.value);
     setMyData([]);
     setPageNum(1);
   }
-
-  function handleClickFilter(e) {
-    setSearchQuery(e);
-    setPageNum(1);
-    setMyData([]);
-  }
-
   function closeGallery() {
     setGalleryVisible(false);
+    setPopup("Gallery");
   }
 
   return (
     <div id="header">
-      <div className="title">
-        <h1>Image Gallery</h1>
-        <button type="button" id="closeButton" onClick={closeGallery}>
-          <img src={closeBttn} alt="" />
-        </button>
-      </div>
-
+      {matches && (
+        <>
+          <h1>Image Gallery</h1>
+          <button type="button" onClick={closeGallery} className="close_button">
+            <CloseButton />
+          </button>
+        </>
+      )}
+      {!matches && <h1>Gallery</h1>}
       <div className="searchBar">
         <input
-          placeholder="Search here &#128270;"
+          placeholder="Search here"
           type="text"
           name=""
           id="searchBar"
@@ -44,12 +45,16 @@ function GalleryHeader({
           onChange={(e) => handleChange(e)}
         />
         <div id="filters">
-          <button
-            type="button"
-            onClick={(e) => handleClickFilter(e.target.innerText)}
-          >
-            Mars
-          </button>
+          {filterArray.map((e) => {
+            return (
+              <FilterButton
+                filterText={e}
+                setSearchQuery={setSearchQuery}
+                setMyData={setMyData}
+                setPageNum={setPageNum}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

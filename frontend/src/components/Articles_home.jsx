@@ -25,9 +25,9 @@ function Articles() {
             key={article.id}
             onClick={() => window.open(url, "_blank").focus()}
           >
-            <img src={imageUrl} className="articles_css" alt={title} />
-            <div id="titleArticles">
-              <h3>{title}</h3>
+            <img src={imageUrl} className="img_article" alt={title} />
+            <div id="titleArticles_container">
+              <h3 className="articles_title">{title}</h3>
             </div>
           </div>
         );

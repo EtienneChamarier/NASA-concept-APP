@@ -1,7 +1,11 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
 
-import nasaLogo from "../assets/nasa-logo.png";
+import CloseButton from "./CloseButton";
+import LeftArrow from "./LeftArrow";
+import RightArrow from "./RightArrow";
 // eslint-disable-next-line react/prop-types
 export default function ImageSwiper({
   image,
@@ -11,35 +15,72 @@ export default function ImageSwiper({
   setPageNum,
 }) {
   const indexOfImage = myData.findIndex((element) => element === image);
-  console.info(image);
+
   function handleNextClick() {
     if (indexOfImage === myData.length - 2) {
       setPageNum((prevState) => prevState + 1);
     }
-    console.info(image);
+
     setImage(myData[indexOfImage + 1]);
   }
   function handlePreviousClick() {
     setImage(myData[indexOfImage - 1]);
   }
+
+  function handleImageClick() {
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const check = confirm(
+      "Are you sure ? This will open the original image in a new tab (this image can be voluminous)"
+    );
+    if (check) {
+      fetch(`${image.href}`, {
+        hearders: { "Access-Control-Allow-Origin": "*" },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          window.open(data[0], "_blank").focus();
+        })
+        .catch((error) => console.error(error));
+    }
+  }
   return (
     <div className="imageSwiper">
-      <div className="imageSwiperHeader">
-        <img src={nasaLogo} alt="" className="nasaLogo" />
-        <button type="button" onClick={() => setVisible(false)}>
-          Fermer
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => setVisible(false)}
+        className="close_button"
+      >
+        <CloseButton />
+      </button>
+
       <div className="imageSwiperBody">
-        <button
-          type="button"
-          onClick={handlePreviousClick}
-          disabled={indexOfImage < 1}
-        >
-          Précédent
-        </button>
         <div className="imageDetailBody">
-          <img src={image.links[0].href} alt="" />
+          <button
+            type="button"
+            onClick={handlePreviousClick}
+            disabled={indexOfImage < 1}
+            id="swiperButtonPrevious"
+          >
+            <LeftArrow />
+          </button>
+
+          <img
+            title="Open original image in new tab"
+            src={image.links[0].href}
+            alt={image.data[0].title}
+            onClick={handleImageClick}
+          />
+
+          <button
+            onClick={handleNextClick}
+            disabled={indexOfImage >= myData.length - 1}
+            type="button"
+            id="swiperButtonNext"
+          >
+            <RightArrow />
+          </button>
+        </div>
+        <div className="imageDetailFooter">
           <h2>{image.data[0].title}</h2>
 
           {image.data[0].photographer ? (
@@ -50,10 +91,6 @@ export default function ImageSwiper({
             ""
           )}
         </div>
-
-        <button onClick={handleNextClick} type="button">
-          Suivant
-        </button>
       </div>
     </div>
   );
